@@ -11,7 +11,7 @@ export interface IKnownTokenData {
   symbol: string;
   decimals: number; // Fix: fetch this from smart-contract
   addresses: {
-    [K in NetworkId]?: string;
+    [K in NetworkId]: string;
   };
 }
 
@@ -69,4 +69,9 @@ export interface IAuth {
   address?: string;
   connectorName?: EConnectorNames;
   authTokens: { [k: string]: string | undefined };
+}
+
+export interface IconProps extends React.SVGAttributes<SVGElement> {
+  children?: never;
+  color?: string;
 }
