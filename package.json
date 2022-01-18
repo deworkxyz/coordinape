@@ -33,6 +33,7 @@
     "ethers": "5.5.1",
     "gqty": "^2.1.0",
     "graphql": "^16.0.1",
+    "graphql-request": "^3.7.0",
     "history": "5.0.0",
     "itiriri": "2.0.1",
     "lodash": "4.17.21",
@@ -50,6 +51,7 @@
     "source-map-explorer": "2.5.2",
     "styled-components": "5.2.3",
     "true-myth": "^4.1.1",
+    "validatorjs": "^3.22.1",
     "web-vitals": "1.1.0",
     "zod": "3.7.1"
   },
