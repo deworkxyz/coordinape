@@ -5,9 +5,16 @@ import { transparentize } from 'polished';
 
 import { makeStyles, Button } from '@material-ui/core';
 
-import { ApeAvatar, FormModal, ApeTextField, ApeToggle } from 'components';
+import {
+  ApeAvatar,
+  FormModal,
+  ApeTextField,
+  ApeToggle,
+  ApeInfoTooltip,
+} from 'components';
 import { useApiAdminCircle } from 'hooks';
-import { UploadIcon, EditIcon } from 'icons';
+import { UploadIcon, EditIcon, GithubIcon } from 'icons';
+import { DeworkIcon } from 'icons/DeworkIcon';
 import { useSelectedCircle } from 'recoilState/app';
 import { getCircleAvatar } from 'utils/domain';
 
@@ -449,6 +456,26 @@ export const AdminCircleModal = ({
           onChange={val => setAutoOptOut(val)}
           label="Auto Opt Out?"
         />
+      </div>
+      <div>
+        <div style={{ display: 'grid', marginBottom: 8 }}>
+          <label className={classes.subTitle}>
+            {'Show List of Completed Work '}
+            <ApeInfoTooltip>
+              {
+                'Connect to Github or Dework to show a list of tasks or PRs each contributor has done during the epoch'
+              }
+            </ApeInfoTooltip>
+          </label>
+        </div>
+        <div style={{ display: 'flex', gap: 16 }}>
+          <Button variant="contained" size="small" startIcon={<GithubIcon />}>
+            Connect Github
+          </Button>
+          <Button variant="contained" size="small" startIcon={<DeworkIcon />}>
+            Connect Dework
+          </Button>
+        </div>
       </div>
       <div className={classes.bottomContainer}>
         <p className={classes.subTitle}>Discord Webhook</p>

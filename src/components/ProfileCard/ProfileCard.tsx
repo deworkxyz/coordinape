@@ -14,6 +14,7 @@ import {
 import { USER_ROLE_ADMIN, USER_ROLE_COORDINAPE } from 'config/constants';
 import { useNavigation } from 'hooks';
 import { DownArrowIcon } from 'icons';
+import { DeworkTask } from 'pages/AllocationPage/AllocationGive';
 import { useSetEditProfileOpen } from 'recoilState/ui';
 import { EXTERNAL_URL_FEEDBACK } from 'routes/paths';
 
@@ -121,6 +122,7 @@ export const ProfileCard = ({
   updateGift,
   isMe,
   tokenName,
+  tasks,
 }: {
   user: IUser;
   tokens: number;
@@ -129,6 +131,7 @@ export const ProfileCard = ({
   updateGift?: TUpdateGift;
   isMe?: boolean;
   tokenName: string;
+  tasks?: DeworkTask[];
 }) => {
   const classes = useStyles();
   const { getToMap, getToProfile } = useNavigation();
@@ -139,16 +142,6 @@ export const ProfileCard = ({
 
   const hideUserBio =
     (userBioTextLength > 93 && skillsLength > 2) || userBioTextLength > 270;
-
-  const tasks = [
-    {
-      id: '1',
-      name: 'Task Name',
-      permalink: 'https://fant.io',
-      storyPoints: 8,
-    },
-    { id: '2', name: 'Task Name 2', permalink: 'https://fant.io' },
-  ];
 
   return (
     <div className={classes.root}>
@@ -197,13 +190,15 @@ export const ProfileCard = ({
           )}
         </span>
 
-        <div className={classes.skillContainer}>
-          <ProfileSkills
-            skills={user?.profile?.skills ?? []}
-            isAdmin={user.role === USER_ROLE_ADMIN}
-            max={3}
-          />
-        </div>
+        {!Math.random() && (
+          <div className={classes.skillContainer}>
+            <ProfileSkills
+              skills={user?.profile?.skills ?? []}
+              isAdmin={user.role === USER_ROLE_ADMIN}
+              max={3}
+            />
+          </div>
+        )}
       </div>
 
       <div className={classes.bio} style={{ width: '100%' }}>
@@ -213,39 +208,45 @@ export const ProfileCard = ({
           <ReadMore isHidden={hideUserBio}>{user.bio}</ReadMore>
         )}
 
-        <div
-          style={{
-            textAlign: 'left',
-            backgroundColor: 'white',
-            width: '100%',
-            marginTop: 12,
-            borderRadius: 8,
-            padding: 12,
-          }}
-        >
-          <h5 style={{ textTransform: 'uppercase', margin: 0 }}>
-            Completed Dework tasks
-          </h5>
-          {tasks.map(task => (
-            <a
-              key={task.id}
-              href={task.permalink}
-              target="_blank"
-              rel="noreferrer"
-              style={{ color: 'unset', paddingTop: 4, paddingBottom: 4 }}
-            >
-              <div style={{ display: 'flex', padding: 2 }}>
-                <div style={{ flex: 1 }}>
-                  {task.name}{' '}
-                  {!!task.storyPoints && `(${task.storyPoints} points)`}
+        {!!tasks && (
+          <div
+            style={{
+              textAlign: 'left',
+              backgroundColor: 'white',
+              width: '100%',
+              marginTop: 12,
+              borderRadius: 8,
+              padding: 12,
+            }}
+          >
+            <h5 style={{ textTransform: 'uppercase', margin: 0 }}>
+              Completed Dework tasks
+            </h5>
+            {tasks.map(task => (
+              <a
+                key={task.id}
+                href={task.permalink}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: 'unset', paddingTop: 4, paddingBottom: 4 }}
+              >
+                <div style={{ display: 'flex', padding: 2 }}>
+                  <div style={{ flex: 1 }}>
+                    {task.name}{' '}
+                    {!!task.storyPoints && `(${task.storyPoints} points)`}
+                  </div>
+                  <DownArrowIcon
+                    style={{
+                      width: 16,
+                      height: 16,
+                      transform: 'rotate(-90deg)',
+                    }}
+                  />
                 </div>
-                <DownArrowIcon
-                  style={{ width: 16, height: 16, transform: 'rotate(-90deg)' }}
-                />
-              </div>
-            </a>
-          ))}
-        </div>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {!disabled && updateGift && (

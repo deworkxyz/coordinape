@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import clsx from 'clsx';
 
@@ -171,6 +171,70 @@ enum FilterType {
   NewMember = 2,
 }
 
+export interface DeworkTask {
+  id: string;
+  name: string;
+  permalink: string;
+  storyPoints?: number;
+}
+
+function useDeworkTasksByAddress(): Record<string, DeworkTask[]> {
+  const [mapping, setMapping] = useState<Record<string, DeworkTask[]>>({});
+  useEffect(() => {
+    fetch(`http://localhost:8080/graphql`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: `
+        query CoordinapeDeworkTasksQuery($projectId:UUID!) {
+          tasks: getTasks(input:{
+            projectIds: [$projectId]
+            statuses: [DONE]
+          }) {
+            id
+            name
+            permalink
+            storyPoints
+            assignees {
+              id
+              threepids {
+                source
+                threepid
+              }
+            }
+          }
+        }
+`,
+        variables: { projectId: '40506bb0-b5fd-4f5f-a2f5-7b7a0d5c136e' },
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        const mapping: Record<string, DeworkTask[]> = {};
+        res.data.tasks.forEach((task: any) => {
+          const addresses = task.assignees
+            .map((u: any) =>
+              u.threepids.find((t: any) => t.source === 'metamask')
+            )
+            .map((t: any) => t?.threepid.toLowerCase())
+            .filter((t: any) => !!t);
+          addresses.forEach((address: any) => {
+            if (!mapping[address]) mapping[address] = [];
+            mapping[address].push({
+              id: task.id,
+              name: task.name,
+              permalink: task.permalink,
+              storyPoints: task.storyPoints,
+            });
+          });
+        });
+
+        setMapping(mapping);
+      });
+  }, []);
+  return mapping;
+}
+
 const AllocationGive = () => {
   const classes = useStyles();
 
@@ -184,6 +248,8 @@ const AllocationGive = () => {
   const { givePerUser, localGifts, updateGift } = useAllocation(circleId);
   const [orderType, setOrderType] = useState<OrderType>(OrderType.Alphabetical);
   const [filterType, setFilterType] = useState<number>(0);
+
+  const deworkTasksByAddress = useDeworkTasksByAddress();
 
   return (
     <div className={classes.root}>
@@ -262,6 +328,7 @@ const AllocationGive = () => {
           note=""
           isMe
           tokenName={myUser.circle.tokenName}
+          tasks={deworkTasksByAddress[myUser.address.toLowerCase()]}
         />
         {localGifts
           .map(g => g.user)
@@ -303,6 +370,7 @@ const AllocationGive = () => {
                 updateGift(user.id, update)
               }
               user={user}
+              tasks={deworkTasksByAddress[user.address.toLowerCase()]}
             />
           ))}
       </div>
