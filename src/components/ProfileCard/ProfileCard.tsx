@@ -13,6 +13,7 @@ import {
 } from 'components';
 import { USER_ROLE_ADMIN, USER_ROLE_COORDINAPE } from 'config/constants';
 import { useNavigation } from 'hooks';
+import { DownArrowIcon } from 'icons';
 import { useSetEditProfileOpen } from 'recoilState/ui';
 import { EXTERNAL_URL_FEEDBACK } from 'routes/paths';
 
@@ -139,6 +140,16 @@ export const ProfileCard = ({
   const hideUserBio =
     (userBioTextLength > 93 && skillsLength > 2) || userBioTextLength > 270;
 
+  const tasks = [
+    {
+      id: '1',
+      name: 'Task Name',
+      permalink: 'https://fant.io',
+      storyPoints: 8,
+    },
+    { id: '2', name: 'Task Name 2', permalink: 'https://fant.io' },
+  ];
+
   return (
     <div className={classes.root}>
       <div className={classes.topRow}>
@@ -195,12 +206,46 @@ export const ProfileCard = ({
         </div>
       </div>
 
-      <div className={classes.bio}>
+      <div className={classes.bio} style={{ width: '100%' }}>
         {isMe && !user.bio ? (
           'Your Epoch Statement is Blank'
         ) : (
           <ReadMore isHidden={hideUserBio}>{user.bio}</ReadMore>
         )}
+
+        <div
+          style={{
+            textAlign: 'left',
+            backgroundColor: 'white',
+            width: '100%',
+            marginTop: 12,
+            borderRadius: 8,
+            padding: 12,
+          }}
+        >
+          <h5 style={{ textTransform: 'uppercase', margin: 0 }}>
+            Completed Dework tasks
+          </h5>
+          {tasks.map(task => (
+            <a
+              key={task.id}
+              href={task.permalink}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: 'unset', paddingTop: 4, paddingBottom: 4 }}
+            >
+              <div style={{ display: 'flex', padding: 2 }}>
+                <div style={{ flex: 1 }}>
+                  {task.name}{' '}
+                  {!!task.storyPoints && `(${task.storyPoints} points)`}
+                </div>
+                <DownArrowIcon
+                  style={{ width: 16, height: 16, transform: 'rotate(-90deg)' }}
+                />
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
 
       {!disabled && updateGift && (
