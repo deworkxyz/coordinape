@@ -30,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       'X-Hasura-User-Id': tokenRow.tokenable_id.toString(),
       'X-Hasura-Role': profile.admin_view ? 'superadmin' : 'user',
     });
-  } catch (e) {
+  } catch (e: any) {
     res.status(401).json({
       error: '401',
       message: (e.message as string) || 'Unexpected error',

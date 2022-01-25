@@ -3,7 +3,7 @@ set -e
 
 FIND_DEV_PID="lsof -t -i:8545 -sTCP:LISTEN"
 
-git submodule update --init --recursive
+# git submodule update --init --recursive
 yarn hardhat:install --frozen-lockfile
 yarn hardhat:compile
 

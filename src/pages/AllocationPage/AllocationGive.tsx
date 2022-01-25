@@ -181,7 +181,8 @@ export interface DeworkTask {
 function useDeworkTasksByAddress(): Record<string, DeworkTask[]> {
   const [mapping, setMapping] = useState<Record<string, DeworkTask[]>>({});
   useEffect(() => {
-    fetch(`http://localhost:8080/graphql`, {
+    // fetch(`http://localhost:8080/graphql`, {
+    fetch(`https://api.demo.dework.xyz/graphql`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -205,7 +206,8 @@ function useDeworkTasksByAddress(): Record<string, DeworkTask[]> {
           }
         }
 `,
-        variables: { projectId: '40506bb0-b5fd-4f5f-a2f5-7b7a0d5c136e' },
+        // variables: { projectId: '40506bb0-b5fd-4f5f-a2f5-7b7a0d5c136e' },
+        variables: { projectId: 'eca612b0-be66-4b29-9664-38039db28981' },
       }),
     })
       .then(res => res.json())

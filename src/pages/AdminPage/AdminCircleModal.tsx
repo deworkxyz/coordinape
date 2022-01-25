@@ -472,7 +472,12 @@ export const AdminCircleModal = ({
           <Button variant="contained" size="small" startIcon={<GithubIcon />}>
             Connect Github
           </Button>
-          <Button variant="contained" size="small" startIcon={<DeworkIcon />}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<DeworkIcon />}
+            href="https://demo.dework.xyz/oauth2/authorize"
+          >
             Connect Dework
           </Button>
         </div>
