@@ -10,6 +10,7 @@ import {
   useRecoilValueLoadable,
 } from 'recoil';
 
+import { DEWORK_API_URL } from 'config/env';
 import { getApiService } from 'services/api';
 import { extraProfile } from 'utils/modelExtenders';
 import { getSelfIdProfile } from 'utils/selfIdHelpers';
@@ -414,16 +415,18 @@ interface ICircleTask {
 
 export const rSelectedCircleTasks = selector<ICircleTask[]>({
   key: 'rSelectedCircleTasks',
-  get: async () => {
-    // return fetch('http://localhost:8080/graphql', {
-    return fetch(`https://api.demo.dework.xyz/graphql`, {
+  get: async ({ get }) => {
+    const circle = get(rSelectedCircle);
+    if (!circle.circle.dework_organization_id) return [];
+    return fetch(`${DEWORK_API_URL}/graphql`, {
+      // return fetch(`https://api.demo.dework.xyz/graphql`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         query: `
-          query CoordinapeDeworkTasksQuery($projectId:UUID!) {
+          query CoordinapeDeworkTasksQuery($organizationId:UUID!) {
             tasks: getTasks(input:{
-              projectIds: [$projectId]
+              organizationIds: [$organizationId]
               statuses: [DONE]
             }) {
               id
@@ -439,8 +442,7 @@ export const rSelectedCircleTasks = selector<ICircleTask[]>({
             }
           }
         `,
-        // variables: { projectId: '40506bb0-b5fd-4f5f-a2f5-7b7a0d5c136e' },
-        variables: { projectId: 'eca612b0-be66-4b29-9664-38039db28981' },
+        variables: { organizationId: circle.circle.dework_organization_id },
       }),
     })
       .then(res => res.json())

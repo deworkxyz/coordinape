@@ -23,6 +23,14 @@ export const API_URL = getEnvValue(
   'REACT_APP_API_BASE_URL',
   'https://missing-laravel-url.edu'
 );
+export const DEWORK_API_URL = getEnvValue(
+  'REACT_APP_DEWORK_API_URL',
+  'https://api.dework.xyz'
+);
+export const DEWORK_APP_INSTALL_URL = getEnvValue(
+  'REACT_APP_DEWORK_APP_INSTALL_URL',
+  'https://dework.xyz/apps/install/coordinape'
+);
 // The test key always returns: 10000000-aaaa-bbbb-cccc-000000000001
 export const CAPTCHA_SITE_KEY = IN_PRODUCTION
   ? getEnvValue('REACT_APP_H_CAPTCHA', 'missing-captcha-site-key')

@@ -12,10 +12,12 @@ import {
   ApeToggle,
   ApeInfoTooltip,
 } from 'components';
+import { DEWORK_APP_INSTALL_URL } from 'config/env';
 import { useApiAdminCircle } from 'hooks';
-import { UploadIcon, EditIcon, GithubIcon } from 'icons';
+import { UploadIcon, EditIcon } from 'icons';
 import { DeworkIcon } from 'icons/DeworkIcon';
 import { useSelectedCircle } from 'recoilState/app';
+import { getDeworkCallbackPath } from 'routes/paths';
 import { getCircleAvatar } from 'utils/domain';
 
 import { ICircle } from 'types';
@@ -139,6 +141,11 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
     color: theme.colors.linkBlue,
   },
+  completedWorkContainer: {
+    display: 'grid',
+    placeItems: 'center',
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 const YesNoTooltip = ({ yes = '', no = '', href = '', anchorText = '' }) => {
@@ -199,6 +206,9 @@ export const AdminCircleModal = ({
   const [vouchingText, setVouchingText] = useState(circle.vouchingText);
   const [onlyGiverVouch, setOnlyGiverVouch] = useState(circle.only_giver_vouch);
   const [autoOptOut, setAutoOptOut] = useState(circle.auto_opt_out);
+  const [deworkOrganizationId, setDeworkOrganizationId] = useState(
+    circle.dework_organization_id
+  );
 
   // onChange Logo
   const onChangeLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -258,7 +268,8 @@ export const AdminCircleModal = ({
         vouchingText !== circle.vouchingText ||
         onlyGiverVouch !== circle.only_giver_vouch ||
         teamSelection !== circle.team_selection ||
-        autoOptOut !== circle.auto_opt_out
+        autoOptOut !== circle.auto_opt_out ||
+        deworkOrganizationId !== circle.dework_organization_id
       ) {
         await updateCircle({
           name: circleName,
@@ -275,6 +286,7 @@ export const AdminCircleModal = ({
           only_giver_vouch: onlyGiverVouch,
           team_selection: teamSelection,
           auto_opt_out: autoOptOut,
+          dework_organization_id: deworkOrganizationId,
         }).then(() => {
           onClose();
         });
@@ -299,7 +311,8 @@ export const AdminCircleModal = ({
     vouchingText !== circle.vouchingText ||
     onlyGiverVouch !== circle.only_giver_vouch ||
     teamSelection !== circle.team_selection ||
-    autoOptOut !== circle.auto_opt_out;
+    autoOptOut !== circle.auto_opt_out ||
+    deworkOrganizationId !== circle.dework_organization_id;
   return (
     <FormModal
       title="Edit Circle Settings"
@@ -457,30 +470,37 @@ export const AdminCircleModal = ({
           label="Auto Opt Out?"
         />
       </div>
-      <div>
-        <div style={{ display: 'grid', marginBottom: 8 }}>
-          <label className={classes.subTitle}>
-            {'Show List of Completed Work '}
+      <div className={classes.completedWorkContainer}>
+        <div>
+          <p className={classes.subTitle}>
+            Show List of Completed Work
             <ApeInfoTooltip>
-              {
-                'Connect to Github or Dework to show a list of tasks or PRs each contributor has done during the epoch'
-              }
+              Connect to Dework to show a list of tasks each contributor has
+              done during an epoch
             </ApeInfoTooltip>
-          </label>
+          </p>
         </div>
-        <div style={{ display: 'flex', gap: 16 }}>
-          <Button variant="contained" size="small" startIcon={<GithubIcon />}>
-            Connect Github
-          </Button>
+        {deworkOrganizationId ? (
           <Button
             variant="contained"
             size="small"
             startIcon={<DeworkIcon />}
-            href="https://demo.dework.xyz/oauth2/authorize"
+            onClick={() => setDeworkOrganizationId(null)}
+          >
+            Disconnect Dework
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<DeworkIcon />}
+            href={`${DEWORK_APP_INSTALL_URL}?redirect=${
+              window.location.origin
+            }${getDeworkCallbackPath()}`}
           >
             Connect Dework
           </Button>
-        </div>
+        )}
       </div>
       <div className={classes.bottomContainer}>
         <p className={classes.subTitle}>Discord Webhook</p>

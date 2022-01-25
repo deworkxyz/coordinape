@@ -28,6 +28,7 @@ export interface IApiCircle {
   protocol_id: number;
   protocol: IProtocol;
   auto_opt_out: boolean;
+  dework_organization_id: string | null;
 }
 
 export interface ICircle extends IApiCircle {

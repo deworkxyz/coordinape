@@ -60,6 +60,7 @@ export interface PutCirclesParam {
   only_giver_vouch: boolean;
   team_selection: boolean;
   auto_opt_out: boolean;
+  dework_organization_id: string | null;
 }
 
 export interface CreateCircleParam {

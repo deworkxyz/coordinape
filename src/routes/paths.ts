@@ -50,6 +50,7 @@ export const getCirclesPath = () => '/admin/circles';
 export const getCreateCirclePath = () => APP_PATH_CREATE_CIRCLE;
 export const getProfilePath = ({ address }: { address: string }) =>
   `/profile/${address}`;
+export const getDeworkCallbackPath = () => `/dework-callback`;
 
 interface INavItem {
   label: string;

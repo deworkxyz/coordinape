@@ -17,7 +17,7 @@ interface Props {
 const useStyles = makeStyles(theme => ({
   root: {
     textAlign: 'left',
-    marginTop: theme.spacing(1),
+    margin: theme.spacing(1, 0),
     padding: theme.spacing(1.5),
     backgroundColor: theme.colors.white,
     borderRadius: 8,

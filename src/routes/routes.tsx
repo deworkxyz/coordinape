@@ -6,6 +6,7 @@ import AdminPage from 'pages/AdminPage';
 import AllocationPage from 'pages/AllocationPage';
 import CreateCirclePage from 'pages/CreateCirclePage';
 import DefaultPage from 'pages/DefaultPage';
+import { DeworkCallbackPage } from 'pages/DeworkCallbackPage/DeworkCallbackPage';
 import HistoryPage from 'pages/HistoryPage';
 import OverviewPage from 'pages/OverviewPage';
 import ProfilePage from 'pages/ProfilePage';
@@ -125,6 +126,12 @@ const LoggedInRoutes = () => {
         key={paths.getCirclesPath()}
         path={paths.getCirclesPath()}
         component={AdminPage}
+      />
+      <Route
+        exact
+        key={paths.getDeworkCallbackPath()}
+        path={paths.getDeworkCallbackPath()}
+        component={DeworkCallbackPage}
       />
 
       <Redirect to={paths.getHomePath()} />
