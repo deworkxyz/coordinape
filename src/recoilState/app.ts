@@ -398,3 +398,73 @@ export const useProfile = (address: string) =>
 
 export const useEpochsStatus = (circleId: number) =>
   useRecoilValue(rCircleEpochsStatus(circleId));
+
+interface ICircleTask {
+  id: string;
+  name: string;
+  permalink: string;
+  assignees: {
+    id: string;
+    threepids: {
+      source: string;
+      threepid: string;
+    }[];
+  }[];
+}
+
+export const rSelectedCircleTasks = selector<ICircleTask[]>({
+  key: 'rSelectedCircleTasks',
+  get: async () => {
+    return fetch('http://localhost:8080/graphql', {
+      // fetch(`https://api.demo.dework.xyz/graphql`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: `
+          query CoordinapeDeworkTasksQuery($projectId:UUID!) {
+            tasks: getTasks(input:{
+              projectIds: [$projectId]
+              statuses: [DONE]
+            }) {
+              id
+              name
+              permalink
+              assignees {
+                id
+                threepids {
+                  source
+                  threepid
+                }
+              }
+            }
+          }
+        `,
+        variables: { projectId: '40506bb0-b5fd-4f5f-a2f5-7b7a0d5c136e' },
+        // variables: { projectId: 'eca612b0-be66-4b29-9664-38039db28981' },
+      }),
+    })
+      .then(res => res.json())
+      .then(json => json.data.tasks);
+  },
+});
+
+export const rProfileTasks = selectorFamily<ICircleTask[], string>({
+  key: 'rProfileTasks',
+  get:
+    (address: string) =>
+    ({ get }) => {
+      const allTasks = get(rSelectedCircleTasks);
+      return allTasks.filter(task =>
+        task.assignees.some(user =>
+          user.threepids.some(
+            t =>
+              t.source === 'metamask' &&
+              t.threepid.toLowerCase() === address.toLowerCase()
+          )
+        )
+      );
+    },
+});
+
+export const useProfileTasks = (address: string) =>
+  useRecoilValue(rProfileTasks(address));

@@ -13,13 +13,13 @@ import {
 } from 'components';
 import { USER_ROLE_ADMIN, USER_ROLE_COORDINAPE } from 'config/constants';
 import { useNavigation } from 'hooks';
-import { DownArrowIcon } from 'icons';
-import { DeworkTask } from 'pages/AllocationPage/AllocationGive';
+import { useProfileTasks } from 'recoilState';
 import { useSetEditProfileOpen } from 'recoilState/ui';
 import { EXTERNAL_URL_FEEDBACK } from 'routes/paths';
 
 import { CardInfoText } from './CardInfoText';
 import { GiftInput } from './GiftInput';
+import { TasksSummary } from './TasksSummary';
 
 import { IUser } from 'types';
 
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: 330,
-    height: 452,
+    minHeight: 452,
     margin: theme.spacing(1),
     padding: theme.spacing(1.3, 1.3, 2),
     background: theme.colors.background,
@@ -93,6 +93,7 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
     WebkitLineClamp: 4,
     wordBreak: 'break-word',
+    width: '100%',
   },
   editButton: {
     margin: theme.spacing(7, 0, 2),
@@ -122,7 +123,6 @@ export const ProfileCard = ({
   updateGift,
   isMe,
   tokenName,
-  tasks,
 }: {
   user: IUser;
   tokens: number;
@@ -131,11 +131,12 @@ export const ProfileCard = ({
   updateGift?: TUpdateGift;
   isMe?: boolean;
   tokenName: string;
-  tasks?: DeworkTask[];
 }) => {
   const classes = useStyles();
   const { getToMap, getToProfile } = useNavigation();
   const setEditProfileOpen = useSetEditProfileOpen();
+
+  const tasks = useProfileTasks(user.address);
 
   const userBioTextLength = user?.bio?.length ?? 0;
   const skillsLength = user?.profile?.skills?.length ?? 0;
@@ -190,63 +191,23 @@ export const ProfileCard = ({
           )}
         </span>
 
-        {!Math.random() && (
-          <div className={classes.skillContainer}>
-            <ProfileSkills
-              skills={user?.profile?.skills ?? []}
-              isAdmin={user.role === USER_ROLE_ADMIN}
-              max={3}
-            />
-          </div>
-        )}
+        <div className={classes.skillContainer}>
+          <ProfileSkills
+            skills={user?.profile?.skills ?? []}
+            isAdmin={user.role === USER_ROLE_ADMIN}
+            max={3}
+          />
+        </div>
       </div>
 
-      <div className={classes.bio} style={{ width: '100%' }}>
+      <div className={classes.bio}>
         {isMe && !user.bio ? (
           'Your Epoch Statement is Blank'
         ) : (
           <ReadMore isHidden={hideUserBio}>{user.bio}</ReadMore>
         )}
 
-        {!!tasks && (
-          <div
-            style={{
-              textAlign: 'left',
-              backgroundColor: 'white',
-              width: '100%',
-              marginTop: 12,
-              borderRadius: 8,
-              padding: 12,
-            }}
-          >
-            <h5 style={{ textTransform: 'uppercase', margin: 0 }}>
-              Completed Dework tasks
-            </h5>
-            {tasks.map(task => (
-              <a
-                key={task.id}
-                href={task.permalink}
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: 'unset', paddingTop: 4, paddingBottom: 4 }}
-              >
-                <div style={{ display: 'flex', padding: 2 }}>
-                  <div style={{ flex: 1 }}>
-                    {task.name}{' '}
-                    {!!task.storyPoints && `(${task.storyPoints} points)`}
-                  </div>
-                  <DownArrowIcon
-                    style={{
-                      width: 16,
-                      height: 16,
-                      transform: 'rotate(-90deg)',
-                    }}
-                  />
-                </div>
-              </a>
-            ))}
-          </div>
-        )}
+        {!!tasks && <TasksSummary tasks={tasks} />}
       </div>
 
       {!disabled && updateGift && (
