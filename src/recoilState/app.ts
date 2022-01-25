@@ -415,8 +415,8 @@ interface ICircleTask {
 export const rSelectedCircleTasks = selector<ICircleTask[]>({
   key: 'rSelectedCircleTasks',
   get: async () => {
-    return fetch('http://localhost:8080/graphql', {
-      // fetch(`https://api.demo.dework.xyz/graphql`, {
+    // return fetch('http://localhost:8080/graphql', {
+    return fetch(`https://api.demo.dework.xyz/graphql`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -439,8 +439,8 @@ export const rSelectedCircleTasks = selector<ICircleTask[]>({
             }
           }
         `,
-        variables: { projectId: '40506bb0-b5fd-4f5f-a2f5-7b7a0d5c136e' },
-        // variables: { projectId: 'eca612b0-be66-4b29-9664-38039db28981' },
+        // variables: { projectId: '40506bb0-b5fd-4f5f-a2f5-7b7a0d5c136e' },
+        variables: { projectId: 'eca612b0-be66-4b29-9664-38039db28981' },
       }),
     })
       .then(res => res.json())
