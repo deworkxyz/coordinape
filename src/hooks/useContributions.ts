@@ -22,7 +22,7 @@ interface Response {
 }
 
 export function useContributionUsers(): ContributionUser[] {
-  const integrations = useCurrentCircleIntegrations();
+  const { integrations } = useCurrentCircleIntegrations();
   const epoch = useSelectedCircle().circleEpochsStatus.currentEpoch;
 
   const responses = useQueries(

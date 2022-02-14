@@ -53,18 +53,20 @@ export function useCircleIdForEpoch(epochId: number) {
 
 export function useCurrentCircleIntegrations() {
   const id = useSelectedCircle().circle.protocol_id;
-  return (
-    useTypedQuery(`circle-integrations-${id}`, {
-      circles_by_pk: [
-        { id },
-        {
-          id: true,
-          integrations: [
-            {},
-            { id: true, type: true, name: true, data: [{ path: '$' }, true] },
-          ],
-        },
-      ],
-    }).data?.circles_by_pk?.integrations ?? []
-  );
+  const query = useTypedQuery(`circle-integrations-${id}`, {
+    circles_by_pk: [
+      { id },
+      {
+        id: true,
+        integrations: [
+          {},
+          { id: true, type: true, name: true, data: [{ path: '$' }, true] },
+        ],
+      },
+    ],
+  });
+  return {
+    refetch: query.refetch,
+    integrations: query.data?.circles_by_pk?.integrations ?? [],
+  };
 }

@@ -221,17 +221,18 @@ export const AdminCircleModal = ({
   const [onlyGiverVouch, setOnlyGiverVouch] = useState(circle.only_giver_vouch);
   const [autoOptOut, setAutoOptOut] = useState(circle.auto_opt_out);
 
-  const integrations = useCurrentCircleIntegrations();
+  const { integrations, refetch: refetchIntegrations } =
+    useCurrentCircleIntegrations();
   const [deleteIntegration, setDeleteIntegration] =
     useState<typeof integrations[number]>();
   const { deleteCircleIntegration } = useApi();
   const handleDeleteIntegration = useCallback(async () => {
     if (deleteIntegration) {
       await deleteCircleIntegration(deleteIntegration.id);
-      // TODO(fant): refetch circle integrations
+      await refetchIntegrations();
       setDeleteIntegration(undefined);
     }
-  }, [deleteCircleIntegration, deleteIntegration]);
+  }, [deleteCircleIntegration, refetchIntegrations, deleteIntegration]);
 
   // onChange Logo
   const onChangeLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -510,7 +511,7 @@ export const AdminCircleModal = ({
         <Button
           variant="contained"
           size="small"
-          startIcon={<DeworkIcon />}
+          startIcon={<DeworkIcon size="md" />}
           href={`https://app.demo.dework.xyz/apps/install/coordinape?redirect=${
             window.location.origin
           }${getDeworkCallbackPath()}`}
