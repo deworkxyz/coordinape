@@ -1,1 +1,1 @@
-DROP TABLE "public"."ccircle_integrations";
+DROP TABLE "public"."circle_integrations";
