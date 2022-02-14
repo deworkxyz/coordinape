@@ -3,11 +3,19 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { transparentize } from 'polished';
 
-import { makeStyles, Button } from '@material-ui/core';
+import { makeStyles, Button, IconButton } from '@material-ui/core';
 
-import { ApeAvatar, FormModal, ApeTextField, ApeToggle } from 'components';
+import {
+  ApeAvatar,
+  FormModal,
+  ApeTextField,
+  ApeToggle,
+  ActionDialog,
+} from 'components';
 import { useApiAdminCircle } from 'hooks';
-import { UploadIcon, EditIcon } from 'icons';
+import { useCurrentCircleIntegrations } from 'hooks/gql';
+import { UploadIcon, EditIcon, DeleteIcon } from 'icons';
+import { DeworkIcon } from 'icons/Dework';
 import { useSelectedCircle } from 'recoilState/app';
 import { getCircleAvatar } from 'utils/domain';
 
@@ -48,6 +56,9 @@ const useStyles = makeStyles(theme => ({
         background: 'rgba(81, 99, 105, 0.9)',
       },
     },
+  },
+  errorColor: {
+    color: theme.palette.error.main,
   },
   logoAvatar: {
     width: 96,
@@ -106,6 +117,24 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 700,
     color: theme.colors.text,
     textAlign: 'center',
+  },
+  integrationContainer: {
+    marginBottom: theme.spacing(2),
+  },
+  integrationRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+  },
+  integrationText: {
+    color: theme.colors.text,
+    margin: 0,
+    flex: 1,
+  },
+  integrationIcon: {
+    color: theme.colors.text,
+    width: 16,
+    height: 16,
   },
   input: {
     width: 500,
@@ -192,6 +221,10 @@ export const AdminCircleModal = ({
   const [vouchingText, setVouchingText] = useState(circle.vouchingText);
   const [onlyGiverVouch, setOnlyGiverVouch] = useState(circle.only_giver_vouch);
   const [autoOptOut, setAutoOptOut] = useState(circle.auto_opt_out);
+
+  const integrations = useCurrentCircleIntegrations();
+  const [deleteIntegration, setDeleteIntegration] =
+    useState<typeof integrations[number]>();
 
   // onChange Logo
   const onChangeLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -448,6 +481,47 @@ export const AdminCircleModal = ({
           value={autoOptOut}
           onChange={val => setAutoOptOut(val)}
           label="Auto Opt Out?"
+        />
+      </div>
+      <div style={{ display: 'grid' }}>
+        <p className={classes.subTitle}>Integrations</p>
+        <div className={classes.integrationContainer}>
+          {integrations.map((integration, index) => (
+            <div key={index} className={classes.integrationRow}>
+              <DeworkIcon className={classes.integrationIcon} />
+              <p className={classes.integrationText}>{integration.name}</p>
+              <IconButton
+                onClick={() => setDeleteIntegration(integration)}
+                className={classes.errorColor}
+                size="small"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </div>
+          ))}
+        </div>
+        <Button
+          onClick={() => alert('dework')}
+          variant="contained"
+          size="small"
+          startIcon={<DeworkIcon />}
+        >
+          Connect Dework
+        </Button>
+
+        <ActionDialog
+          open={!!deleteIntegration}
+          title={`Remove ${deleteIntegration?.name} from circle`}
+          onClose={() => setDeleteIntegration(undefined)}
+          primaryText="Remove Integration"
+          onPrimary={
+            deleteIntegration
+              ? () => alert('delete...')
+              : // deleteUser(deleteUserDialog.address)
+                //   .then(() => setDeleteUserDialog(undefined))
+                //   .catch(() => setDeleteUserDialog(undefined))
+                undefined
+          }
         />
       </div>
       <div className={classes.bottomContainer}>

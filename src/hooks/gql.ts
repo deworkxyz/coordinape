@@ -50,3 +50,24 @@ export function useCircleIdForEpoch(epochId: number) {
     epochs_by_pk: [{ id: epochId }, { circle_id: true }],
   }).data?.epochs_by_pk?.circle_id;
 }
+
+export function useCurrentCircleIntegrations() {
+  // const id = useSelectedCircle().circle.protocol_id;
+  // return useTypedQuery(`circle-integrations-${id}`, {
+  //   circles_by_pk: [{id}, {id: true, integrations: {id: true, type: true, name: true}}],
+  // }).data?.circles_by_pk;
+  return [
+    {
+      id: 1,
+      name: 'Dework Project Name',
+      type: 'dework',
+      data: { organizationId: 'dde641cb-b50e-403f-955a-f83c154e441f' },
+    },
+    {
+      id: 2,
+      name: 'Dework Project Name 2',
+      type: 'dework',
+      data: { organizationId: 'dde641cb-b50e-403f-955a-f83c154e441f' },
+    },
+  ];
+}
