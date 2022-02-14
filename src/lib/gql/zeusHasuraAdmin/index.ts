@@ -16301,7 +16301,7 @@ export const enum burns_update_column {
 }
 /** unique or primary key constraints on table "circle_integrations" */
 export const enum circle_integrations_constraint {
-  ccircle_integrations_pkey = 'ccircle_integrations_pkey',
+  circle_integrations_pkey = 'circle_integrations_pkey',
 }
 /** select columns of table "circle_integrations" */
 export const enum circle_integrations_select_column {

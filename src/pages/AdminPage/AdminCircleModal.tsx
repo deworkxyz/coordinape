@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import clsx from 'clsx';
+import { useApi } from 'lib/gql';
 import { transparentize } from 'polished';
 
 import { makeStyles, Button, IconButton } from '@material-ui/core';
@@ -14,9 +15,9 @@ import {
 } from 'components';
 import { useApiAdminCircle } from 'hooks';
 import { useCurrentCircleIntegrations } from 'hooks/gql';
-import { UploadIcon, EditIcon, DeleteIcon } from 'icons';
-import { DeworkIcon } from 'icons/Dework';
+import { UploadIcon, EditIcon, DeleteIcon, DeworkIcon } from 'icons';
 import { useSelectedCircle } from 'recoilState/app';
+import { getDeworkCallbackPath } from 'routes/paths';
 import { getCircleAvatar } from 'utils/domain';
 
 import { ICircle } from 'types';
@@ -133,8 +134,6 @@ const useStyles = makeStyles(theme => ({
   },
   integrationIcon: {
     color: theme.colors.text,
-    width: 16,
-    height: 16,
   },
   input: {
     width: 500,
@@ -225,6 +224,14 @@ export const AdminCircleModal = ({
   const integrations = useCurrentCircleIntegrations();
   const [deleteIntegration, setDeleteIntegration] =
     useState<typeof integrations[number]>();
+  const { deleteCircleIntegration } = useApi();
+  const handleDeleteIntegration = useCallback(async () => {
+    if (deleteIntegration) {
+      await deleteCircleIntegration(deleteIntegration.id);
+      // TODO(fant): refetch circle integrations
+      setDeleteIntegration(undefined);
+    }
+  }, [deleteCircleIntegration, deleteIntegration]);
 
   // onChange Logo
   const onChangeLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -488,7 +495,7 @@ export const AdminCircleModal = ({
         <div className={classes.integrationContainer}>
           {integrations.map((integration, index) => (
             <div key={index} className={classes.integrationRow}>
-              <DeworkIcon className={classes.integrationIcon} />
+              <DeworkIcon size="md" className={classes.integrationIcon} />
               <p className={classes.integrationText}>{integration.name}</p>
               <IconButton
                 onClick={() => setDeleteIntegration(integration)}
@@ -501,10 +508,12 @@ export const AdminCircleModal = ({
           ))}
         </div>
         <Button
-          onClick={() => alert('dework')}
           variant="contained"
           size="small"
           startIcon={<DeworkIcon />}
+          href={`https://app.demo.dework.xyz/apps/install/coordinape?redirect=${
+            window.location.origin
+          }${getDeworkCallbackPath()}`}
         >
           Connect Dework
         </Button>
@@ -514,14 +523,7 @@ export const AdminCircleModal = ({
           title={`Remove ${deleteIntegration?.name} from circle`}
           onClose={() => setDeleteIntegration(undefined)}
           primaryText="Remove Integration"
-          onPrimary={
-            deleteIntegration
-              ? () => alert('delete...')
-              : // deleteUser(deleteUserDialog.address)
-                //   .then(() => setDeleteUserDialog(undefined))
-                //   .catch(() => setDeleteUserDialog(undefined))
-                undefined
-          }
+          onPrimary={deleteIntegration ? handleDeleteIntegration : undefined}
         />
       </div>
       <div className={classes.bottomContainer}>

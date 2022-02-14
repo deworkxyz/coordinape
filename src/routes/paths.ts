@@ -50,6 +50,7 @@ export const getDistributePath = ({ epochId }: { epochId: string }) =>
   `/admin/distribute/${epochId}`;
 export const getProfilePath = ({ address }: { address: string }) =>
   `/profile/${address}`;
+export const getDeworkCallbackPath = () => `/dework-callback`;
 
 interface INavItem {
   label: string;

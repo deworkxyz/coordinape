@@ -1,3 +1,28 @@
 table:
   name: circle_integrations
   schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - circle_id
+    - id
+    - data
+    - name
+    - type
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - circle_id
+    - id
+    - data
+    - name
+    - type
+    filter: {}
+  role: user
+delete_permissions:
+- permission:
+    filter: {}
+  role: user
